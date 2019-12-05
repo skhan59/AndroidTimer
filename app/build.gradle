@@ -1,0 +1,79 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath 'com.dicedmelon.gradle:jacoco-android:0.1.4'
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.8.1'
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.15.0'
+        classpath 'gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.6'
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'jacoco-android'
+apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: 'com.github.ben-manes.versions'
+apply plugin: 'com.github.sherter.google-java-format'
+
+jacocoAndroidUnitTestReport {
+    csv.enabled false
+    html.enabled true
+    xml.enabled true
+}
+
+android {
+    compileSdkVersion 27
+
+    defaultConfig {
+        applicationId "edu.luc.etl.cs313.android.stopwatch"
+        minSdkVersion 15
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        debug {
+            testCoverageEnabled true
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    testOptions {
+        unitTests.returnDefaultValues = true
+        unitTests.includeAndroidResources = true
+    }
+    sourceSets {
+        final String sharedTestDir = 'src/main/java/test/android'
+        test {
+            java.srcDir sharedTestDir
+        }
+        androidTest {
+            java.srcDir sharedTestDir
+        }
+    }
+}
+
+dependencies {
+    implementation 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'net.sourceforge.streamsupport:streamsupport:1.5.2'
+    // several duplications on account of shared testcase superclass
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'com.android.support.test:rules:1.0.2'
+    testImplementation 'org.robolectric:robolectric:4.3'
+    testImplementation 'org.bouncycastle:bcprov-jdk15on:1.62'
+    testImplementation 'com.android.support:appcompat-v7:27.1.1'
+    androidTestImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support:appcompat-v7:27.1.1'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+}
